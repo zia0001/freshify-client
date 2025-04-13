@@ -10,12 +10,12 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Add your login logic here
+    
   };
 
   return (
     <div className="card p-4 shadow" style={{ width: '350px' }}>
-      <h1 className="text-center text-primary mb-4">Freshify</h1>
+      <h1 className="text-center text-success mb-4">Freshify</h1>
       <h3 className="text-center">Sign In</h3>
       <form onSubmit={handleSubmit}>
         <input
@@ -34,13 +34,13 @@ const Login = () => {
           onChange={handleChange}
           required
         />
-        <button type="submit" className="btn btn-primary w-100">
+        <button type="submit" className="btn btn-success w-100">
           Sign In
         </button>
       </form>
       <p className="text-center mt-2">
         Don't have an account?{' '}
-        <Link to="/signup" className="text-primary" style={{ cursor: 'pointer' }}>
+        <Link to="/signup" className="text-success" style={{ cursor: 'pointer' }}>
           Sign Up
         </Link>
       </p>

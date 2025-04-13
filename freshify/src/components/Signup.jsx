@@ -172,12 +172,12 @@ const Signup = () => {
           <div className="text-danger mb-2">{errors.password}</div>
         )}
 
-        <button type="submit" className="btn btn-primary w-100">Sign Up</button>
+        <button type="submit" className="btn btn-success w-100">Sign Up</button>
       </form>
 
       <p className="text-center mt-2">
         Already have an account?{' '}
-        <Link to="/login" className="text-primary">Sign In</Link>
+        <Link to="/login" className="text-success">Sign In</Link>
       </p>
     </div>
   );
