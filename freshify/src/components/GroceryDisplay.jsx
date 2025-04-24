@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
+import { useCart } from "./CartContext";
 
 export default function GroceryDisplay() {
+  const { addToCart } = useCart();
   const [visible, setVisible] = useState(false);
   const [itemsToShow, setItemsToShow] = useState(6);
   
@@ -78,31 +80,21 @@ export default function GroceryDisplay() {
     if (categorySection) {
       const categorySectionBottom = categorySection.getBoundingClientRect().bottom;
       
-      // Once the category section is scrolled up enough, show grocery items
-      // This check makes grocery section appear when category section bottom reaches 3/4 of viewport
       if (categorySectionBottom < window.innerHeight * 0.75) {
         setVisible(true);
       }
-      
-      // Do not set it back to false - keep it visible once shown
-      // This prevents the disappearing issue when scrolling back up
     }
   };
 
   // Handle "See More" button click
   const handleSeeMore = () => {
-    // Show 6 more items each time the button is clicked
     setItemsToShow(prev => Math.min(prev + 6, allItems.length));
   };
 
   // Attach scroll event listener
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
-    
-    // Call once to check initial position
     handleScroll();
-
-    // Clean up the event listener on component unmount
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
@@ -113,7 +105,7 @@ export default function GroceryDisplay() {
       id="grocerySection"
       className={`py-5 ${visible ? 'opacity-100' : 'opacity-0'}`}
       style={{ 
-        backgroundColor: "#f6fff6",
+        backgroundColor: "#e9f7ef",
         transition: "opacity 0.5s ease-in-out",
         minHeight: visible ? "auto" : "0"
       }}
@@ -143,13 +135,17 @@ export default function GroceryDisplay() {
                 <div style={{ fontSize: "2rem" }}>{item.icon}</div>
                 <h5 className="card-title mt-2">{item.name}</h5>
                 <p className="text-success fw-bold">{item.price}</p>
-                <button className="btn btn-outline-success btn-sm">Add</button>
+                <button 
+                  className="btn btn-outline-success btn-sm"
+                  onClick={() => addToCart(item)}
+                >
+                  Add
+                </button>
               </div>
             </div>
           ))}
         </div>
         
-        {/* See More button - always show while there are more items */}
         {hasMoreItems && (
           <div className="text-center mt-4">
             <button 

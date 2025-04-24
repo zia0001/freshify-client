@@ -1,8 +1,19 @@
 import { useState } from "react";
-import GroceryDisplay from "./GroceryDisplay"; // Import GroceryDisplay
+import { Link, useNavigate } from "react-router-dom";
+import { useCart } from "./CartContext";
+import GroceryDisplay from "./GroceryDisplay";
 
 export default function FreshifyHeader() {
   const [searchTerm, setSearchTerm] = useState("");
+  const { cartItems } = useCart();
+  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login state
+
+  const handleLogout = () => {
+    localStorage.removeItem('isAuthenticated');
+    setIsLoggedIn(false);
+    navigate('/login');
+  };
 
   return (
     <div className="d-flex flex-column">
@@ -15,9 +26,9 @@ export default function FreshifyHeader() {
         }}
       >
         <div className="container-fluid">
-          <a
+          <Link
             className="navbar-brand"
-            href="#"
+            to="/home"
             style={{
               color: "#ecc94b",
               fontWeight: "bold",
@@ -25,7 +36,7 @@ export default function FreshifyHeader() {
             }}
           >
             Freshify
-          </a>
+          </Link>
 
           <button
             className="navbar-toggler"
@@ -66,24 +77,24 @@ export default function FreshifyHeader() {
 
             <ul className="navbar-nav ms-auto me-3">
               <li className="nav-item">
-                <a className="nav-link active" href="#">
+                <Link className="nav-link active" to="/home">
                   Home
-                </a>
+                </Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#">
+                <Link className="nav-link" to="/">
                   About
-                </a>
+                </Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#">
+                <Link className="nav-link" to="/">
                   Contact
-                </a>
+                </Link>
               </li>
             </ul>
 
             <div className="d-flex align-items-center me-3 position-relative">
-              <a href="#" className="text-white position-relative">
+              <Link to="/cart" className="text-white position-relative">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -94,19 +105,32 @@ export default function FreshifyHeader() {
                 >
                   <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l.84 4.479 9.144-.459L13.89 4H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
                 </svg>
-                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                  9
-                </span>
-              </a>
+                {cartItems.length > 0 && (
+                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    {cartItems.reduce((total, item) => total + item.quantity, 0)}
+                  </span>
+                )}
+              </Link>
             </div>
 
             <div className="d-flex gap-2">
-              <button className="btn btn-outline-light rounded-pill">
-                Log In
-              </button>
-              <button className="btn btn-light rounded-pill text-success">
-                Register
-              </button>
+              {isLoggedIn ? (
+                <button 
+                  className="btn btn-outline-light rounded-pill"
+                  onClick={handleLogout}
+                >
+                  Log Out
+                </button>
+              ) : (
+                <>
+                  <Link to="/login" className="btn btn-outline-light rounded-pill">
+                    Log In
+                  </Link>
+                  <Link to="/signup" className="btn btn-light rounded-pill text-success">
+                    Register
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -115,11 +139,11 @@ export default function FreshifyHeader() {
       {/* Empty div to offset the fixed navbar */}
       <div style={{ height: "56px" }}></div>
 
-      {/* Categories Section - Fixed padding to properly appear below navbar */}
+      {/* Categories Section */}
       <section 
         id="categorySection" 
         className="py-5" 
-        style={{   backgroundColor: "#f6fff6", paddingTop: "40px", minHeight: "500px" }}
+        style={{ backgroundColor: "#e9f7ef", paddingTop: "40px", minHeight: "500px" }}
       >
         <div className="w-100 px-3">
           <h2 className="mb-4 text-success text-center" style={{ fontWeight: "500" }}>
