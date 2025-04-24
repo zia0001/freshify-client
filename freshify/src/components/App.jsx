@@ -4,17 +4,18 @@ import { CartProvider } from './CartContext';
 import Login from './Login';
 import Signup from './Signup';
 import FreshifyHeader from './FreshifyHeader';
+import HomePage from './HomePage';
 import CartPage from './CartPage';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    // Check localStorage for existing auth state
-    return localStorage.getItem('isAuthenticated') === 'true';
+    // For testing, set this to true initially
+    return true;
+    // For production:
+    // return localStorage.getItem('isAuthenticated') === 'true';
   });
 
-  // Persist auth state to localStorage
   useEffect(() => {
     localStorage.setItem('isAuthenticated', isAuthenticated);
   }, [isAuthenticated]);
@@ -22,9 +23,16 @@ function App() {
   return (
     <CartProvider>
       <Router>
-        <div className="bg-light" style={{ minHeight: '100vh' }}>
+        {/* Main app container */}
+        <div className="app-container" style={{ minHeight: '100vh' }}>
+          {/* Render FreshifyHeader outside Routes to show on all pages */}
+          <FreshifyHeader />
+          
+          {/* Empty div to offset the fixed navbar */}
+          <div style={{ height: "56px" }}></div>
+          
           <Routes>
-            {/* Redirect root path based on auth status */}
+            {/* Redirect root to /home if authenticated, /login if not */}
             <Route 
               path="/" 
               element={
@@ -34,7 +42,7 @@ function App() {
               } 
             />
             
-            {/* Auth routes - only accessible when not authenticated */}
+            {/* Auth routes */}
             <Route 
               path="/login" 
               element={
@@ -53,12 +61,12 @@ function App() {
               } 
             />
             
-            {/* Protected routes - only accessible when authenticated */}
+            {/* Main content routes */}
             <Route 
               path="/home" 
               element={
                 isAuthenticated ? 
-                <FreshifyHeader /> : 
+                <HomePage /> : 
                 <Navigate to="/login" replace />
               } 
             />
@@ -67,15 +75,12 @@ function App() {
               path="/cart" 
               element={
                 isAuthenticated ? 
-                <>
-                  <FreshifyHeader />
-                  <CartPage />
-                </> : 
+                <CartPage /> : 
                 <Navigate to="/login" replace />
               } 
             />
 
-            {/* Catch-all route for undefined paths */}
+            {/* Catch-all route */}
             <Route 
               path="*" 
               element={

@@ -6,7 +6,7 @@ export default function GroceryDisplay() {
   const [visible, setVisible] = useState(false);
   const [itemsToShow, setItemsToShow] = useState(6);
   
-  // All grocery items including new additions
+  // All grocery items 
   const allItems = [
     // Fruits and Vegetables
     { name: "Apple", icon: "🍎", price: "$1.99/lb" },
@@ -91,7 +91,7 @@ export default function GroceryDisplay() {
     setItemsToShow(prev => Math.min(prev + 6, allItems.length));
   };
 
-  // Attach scroll event listener
+  // scroll event listener
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     handleScroll();
