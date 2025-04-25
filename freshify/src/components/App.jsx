@@ -10,86 +10,77 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 function AppContent() {
   const location = useLocation();
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    // Check localStorage for existing auth
-    return localStorage.getItem('isAuthenticated') === 'true';
-  });
-
-  const [isInitialCheckDone, setIsInitialCheckDone] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
-    // Set auth status in localStorage whenever it changes
-    localStorage.setItem('isAuthenticated', isAuthenticated);
-    setIsInitialCheckDone(true);
-  }, [isAuthenticated]);
+    localStorage.removeItem('isAuthenticated');
+    setIsAuthenticated(false);
+    setAuthChecked(true);
+  }, []);
 
-  // Check if current route is login or signup
-  const isAuthPage = location.pathname === '/login' || location.pathname === '/signup';
-
-  // Don't render anything until initial auth check is done
-  if (!isInitialCheckDone) {
-    return null; // or a loading spinner
+  if (!authChecked) {
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
   }
 
   return (
     <>
-      {!isAuthPage && isAuthenticated && (
+      {isAuthenticated && !['/login', '/signup'].includes(location.pathname) && (
         <>
-          <FreshifyHeader isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />
-          <div style={{ height: "56px" }}></div> {/* Navbar spacer */}
+          <FreshifyHeader 
+            isAuthenticated={isAuthenticated} 
+            setIsAuthenticated={setIsAuthenticated} 
+          />
+          <div style={{ height: "56px" }}></div>
         </>
       )}
       
       <Routes>
-        <Route 
-          path="/login" 
-          element={
-            !isAuthenticated ? 
-            <Login setIsAuthenticated={setIsAuthenticated} /> : 
+        <Route path="/login" element={
+          !isAuthenticated ? (
+            <Login setIsAuthenticated={setIsAuthenticated} />
+          ) : (
             <Navigate to="/home" replace />
-          } 
-        />
+          )
+        }/>
         
-        <Route 
-          path="/signup" 
-          element={
-            !isAuthenticated ? 
-            <Signup setIsAuthenticated={setIsAuthenticated} /> : 
+        <Route path="/signup" element={
+          !isAuthenticated ? (
+            <Signup setIsAuthenticated={setIsAuthenticated} />
+          ) : (
             <Navigate to="/home" replace />
-          } 
-        />
+          )
+        }/>
         
-        <Route 
-          path="/home" 
-          element={
-            isAuthenticated ? 
-            <HomePage /> : 
-            <Navigate to="/login" replace state={{ from: location }} />
-          } 
-        />
+        <Route path="/home" element={
+          isAuthenticated ? (
+            <HomePage />
+          ) : (
+            <Navigate to="/login" state={{ from: location }} replace />
+          )
+        }/>
         
-        <Route 
-          path="/cart" 
-          element={
-            isAuthenticated ? 
-            <CartPage /> : 
-            <Navigate to="/login" replace state={{ from: location }} />
-          } 
-        />
+        <Route path="/cart" element={
+          isAuthenticated ? (
+            <CartPage />
+          ) : (
+            <Navigate to="/login" state={{ from: location }} replace />
+          )
+        }/>
 
-        <Route 
-          path="/" 
-          element={
-            <Navigate to={isAuthenticated ? "/home" : "/login"} replace />
-          } 
-        />
+        <Route path="/" element={
+          <Navigate to="/login" replace />
+        }/>
 
-        <Route 
-          path="*" 
-          element={
-            <Navigate to={isAuthenticated ? "/home" : "/login"} replace />
-          } 
-        />
+        <Route path="*" element={
+          <Navigate to="/login" replace />
+        }/>
       </Routes>
     </>
   );
@@ -99,9 +90,7 @@ function App() {
   return (
     <CartProvider>
       <Router>
-        <div className="app-container" style={{ minHeight: '100vh' }}>
-          <AppContent />
-        </div>
+        <AppContent />
       </Router>
     </CartProvider>
   );

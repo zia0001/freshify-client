@@ -2,15 +2,14 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "./CartContext";
 
-export default function FreshifyHeader() {
+export default function FreshifyHeader({ isAuthenticated, setIsAuthenticated }) {
   const [searchTerm, setSearchTerm] = useState("");
   const { cartItems } = useCart();
   const navigate = useNavigate();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem('isAuthenticated');
-    setIsLoggedIn(false);
+    setIsAuthenticated(false);
     navigate('/login');
   };
 
@@ -111,7 +110,7 @@ export default function FreshifyHeader() {
           </div>
 
           <div className="d-flex gap-2">
-            {isLoggedIn ? (
+            {isAuthenticated ? (
               <button 
                 className="btn btn-outline-light rounded-pill"
                 onClick={handleLogout}

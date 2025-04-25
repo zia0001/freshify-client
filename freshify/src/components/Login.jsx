@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-const Login = ({ setIsAuthenticated }) => {  // 👈 Add setIsAuthenticated prop
+const Login = ({ setIsAuthenticated }) => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -13,18 +13,15 @@ const Login = ({ setIsAuthenticated }) => {  // 👈 Add setIsAuthenticated prop
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    // Basic validation
     if (!formData.email || !formData.password) {
       setError('Please fill in all fields');
       return;
     }
 
-    // Here you would typically call your authentication API
-    // For demo purposes, we'll simulate successful login
     try {
-      // await authAPI.login(formData);
       setIsAuthenticated(true);
-      navigate('/home');  // 👈 Changed from '/header' to '/home'
+      localStorage.setItem('isAuthenticated', 'true');
+      navigate('/home');
     } catch (err) {
       setError('Invalid email or password');
     }
